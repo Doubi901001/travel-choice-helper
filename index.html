@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Local Flavor Finder</title>
+  <title>Travel Choice Helper</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -14,12 +15,12 @@
     }
 
     .container {
-      max-width: 650px;
+      max-width: 720px;
       margin: auto;
-      background: #ffffff;
+      background: white;
       padding: 35px;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      border-radius: 22px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
     }
 
     h1 {
@@ -38,7 +39,7 @@
       font-weight: bold;
     }
 
-    input {
+    input, select {
       width: 85%;
       padding: 12px;
       margin: 10px 0;
@@ -48,7 +49,7 @@
     }
 
     button {
-      margin-top: 20px;
+      margin: 12px 8px;
       padding: 12px 25px;
       background: #8b5e3c;
       color: white;
@@ -66,9 +67,10 @@
       margin-top: 30px;
       text-align: left;
       background: #fff7f0;
-      padding: 20px;
+      padding: 22px;
       border-radius: 15px;
       display: none;
+      line-height: 1.7;
     }
 
     a {
@@ -82,41 +84,109 @@
     .note {
       font-size: 14px;
       color: #6b4f3f;
-      line-height: 1.6;
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>☕ Local Flavor Finder</h1>
-    <h2>在地特色咖啡甜點推薦師</h2>
+    <h1>🎲 Travel Choice Helper</h1>
+    <h2>AI旅行選擇困難救星</h2>
 
-    <p>請輸入目前所在縣市</p>
+    <p>目前所在縣市</p>
     <input id="city" placeholder="例如：嘉義市、南投縣、台南市">
 
-    <p>請輸入想找的關鍵詞</p>
-    <input id="keyword" placeholder="例如：特色咖啡廳、甜點店、老宅咖啡">
+    <p>同行對象</p>
+    <select id="partner">
+      <option>自己</option>
+      <option>情侶</option>
+      <option>朋友</option>
+      <option>家人</option>
+    </select>
+
+    <p>今天心情</p>
+    <select id="mood">
+      <option>想放鬆</option>
+      <option>想拍照</option>
+      <option>想喝咖啡</option>
+      <option>想吃甜點</option>
+      <option>想冒險</option>
+      <option>不知道</option>
+    </select>
+
+    <p>預算</p>
+    <select id="budget">
+      <option>300元以下</option>
+      <option>300~600元</option>
+      <option>600元以上</option>
+    </select>
 
     <br>
-    <button onclick="searchPlace()">開始搜尋</button>
+
+    <button onclick="recommend()">幫我分析</button>
+    <button onclick="randomPick()">🎲 幫我決定</button>
 
     <div id="result"></div>
   </div>
 
   <script>
-    function searchPlace() {
+    function getRecommendation(mood, partner, budget) {
+      if (mood === "想放鬆") {
+        return {
+          type: "安靜咖啡廳",
+          reason: "你今天想放鬆，適合找環境安靜、可以慢慢坐下來休息的咖啡廳。"
+        };
+      }
+
+      if (mood === "想拍照") {
+        return {
+          type: "老宅咖啡廳 或 景觀咖啡廳",
+          reason: "你今天想拍照，適合選擇有裝潢特色、自然光或景觀氛圍的店。"
+        };
+      }
+
+      if (mood === "想喝咖啡") {
+        return {
+          type: "手沖咖啡 或 自家烘焙咖啡廳",
+          reason: "你今天想喝咖啡，適合找主打咖啡豆、手沖或自家烘焙的店。"
+        };
+      }
+
+      if (mood === "想吃甜點") {
+        return {
+          type: "特色甜點店 或 千層蛋糕店",
+          reason: "你今天想吃甜點，適合搜尋當地有名的蛋糕、塔類、布丁或甜點專門店。"
+        };
+      }
+
+      if (mood === "想冒險") {
+        return {
+          type: "巷弄咖啡廳 或 隱藏版甜點店",
+          reason: "你今天想冒險，適合找比較特別、不一定在熱門商圈的隱藏版店家。"
+        };
+      }
+
+      return {
+        type: "在地特色咖啡廳 或 甜點店",
+        reason: "你目前沒有明確偏好，因此建議從在地特色店家開始搜尋，最快能縮小選擇範圍。"
+      };
+    }
+
+    function recommend() {
       const city = document.getElementById("city").value.trim();
-      const keyword = document.getElementById("keyword").value.trim();
+      const partner = document.getElementById("partner").value;
+      const mood = document.getElementById("mood").value;
+      const budget = document.getElementById("budget").value;
       const result = document.getElementById("result");
 
-      if (city === "" || keyword === "") {
+      if (city === "") {
         result.style.display = "block";
-        result.innerHTML = "請先輸入縣市與關鍵詞。";
+        result.innerHTML = "請先輸入目前所在縣市。";
         return;
       }
 
-      const query = city + " " + keyword;
+      const recommendation = getRecommendation(mood, partner, budget);
+      const query = city + " " + recommendation.type;
 
       const googleMapsUrl =
         "https://www.google.com/maps/search/?api=1&query=" +
@@ -124,7 +194,7 @@
 
       const instagramTag =
         city.replace("市", "").replace("縣", "") +
-        keyword.replace(/\s/g, "");
+        recommendation.type.replace(/\s/g, "").replace("或", "");
 
       const instagramUrl =
         "https://www.instagram.com/explore/tags/" +
@@ -132,13 +202,64 @@
 
       result.style.display = "block";
       result.innerHTML =
-        "<h3>🔍 搜尋結果建議</h3>" +
-        "<p>你正在搜尋：<strong>" + query + "</strong></p>" +
-        "<a href='" + googleMapsUrl + "' target='_blank'>📍 打開 Google Maps 搜尋附近店家</a>" +
-        "<a href='" + instagramUrl + "' target='_blank'>📸 打開 Instagram Hashtag 搜尋人氣照片</a>" +
-        "<p class='note'>本工具不虛構店家，而是協助使用者快速前往 Google Maps 與 Instagram 查找即時結果。實際距離、評價與營業時間請以平台顯示為準。</p>";
+        "<h3>✨ AI 分析結果</h3>" +
+        "<p><strong>所在地：</strong>" + city + "</p>" +
+        "<p><strong>同行對象：</strong>" + partner + "</p>" +
+        "<p><strong>今天心情：</strong>" + mood + "</p>" +
+        "<p><strong>預算：</strong>" + budget + "</p>" +
+        "<hr>" +
+        "<p><strong>推薦方向：</strong>" + recommendation.type + "</p>" +
+        "<p><strong>推薦原因：</strong>" + recommendation.reason + "</p>" +
+        "<a href='" + googleMapsUrl + "' target='_blank'>📍 用 Google Maps 找附近地點</a>" +
+        "<a href='" + instagramUrl + "' target='_blank'>📸 用 Instagram 看打卡照片</a>" +
+        "<p class='note'>提醒：本工具不虛構店家資料，實際距離、評價、營業時間請以 Google Maps 顯示為準。</p>";
+    }
+
+    function randomPick() {
+      const city = document.getElementById("city").value.trim();
+      const result = document.getElementById("result");
+
+      if (city === "") {
+        result.style.display = "block";
+        result.innerHTML = "請先輸入目前所在縣市。";
+        return;
+      }
+
+      const options = [
+        "老宅咖啡廳",
+        "景觀咖啡廳",
+        "特色甜點店",
+        "千層蛋糕店",
+        "布丁甜點店",
+        "巷弄咖啡廳",
+        "隱藏版甜點店",
+        "文青咖啡廳"
+      ];
+
+      const pick = options[Math.floor(Math.random() * options.length)];
+      const query = city + " " + pick;
+
+      const googleMapsUrl =
+        "https://www.google.com/maps/search/?api=1&query=" +
+        encodeURIComponent(query);
+
+      const instagramTag =
+        city.replace("市", "").replace("縣", "") +
+        pick.replace(/\s/g, "");
+
+      const instagramUrl =
+        "https://www.instagram.com/explore/tags/" +
+        encodeURIComponent(instagramTag);
+
+      result.style.display = "block";
+      result.innerHTML =
+        "<h3>🎲 今日命運推薦</h3>" +
+        "<p><strong>你今天就去找：</strong>" + pick + "</p>" +
+        "<p><strong>搜尋地區：</strong>" + city + "</p>" +
+        "<a href='" + googleMapsUrl + "' target='_blank'>📍 用 Google Maps 找附近地點</a>" +
+        "<a href='" + instagramUrl + "' target='_blank'>📸 用 Instagram 看打卡照片</a>" +
+        "<p class='note'>適合選擇困難、不想再滑手機找店的人使用。</p>";
     }
   </script>
 </body>
 </html>
-
