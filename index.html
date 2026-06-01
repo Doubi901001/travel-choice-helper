@@ -124,7 +124,7 @@
     <br>
 
     <button onclick="recommend()">幫我分析</button>
-    <button onclick="randomPick()">🎲 幫我決定</button>
+    <button onclick="randomPick()">🎲 我選不出來，直接幫我決定</button>
 
     <div id="result"></div>
   </div>
@@ -229,11 +229,16 @@
         "老宅咖啡廳",
         "景觀咖啡廳",
         "特色甜點店",
-        "千層蛋糕店",
-        "布丁甜點店",
+        "千層",
+        "布丁",
         "巷弄咖啡廳",
         "隱藏版甜點店",
-        "文青咖啡廳"
+        "文青咖啡廳",
+        "提拉米蘇",
+        "檸檬塔",
+        "可麗露",
+        "戚風蛋糕",
+        "巴斯克"
       ];
 
       const pick = options[Math.floor(Math.random() * options.length)];
@@ -256,6 +261,13 @@
         "<h3>🎲 今日命運推薦</h3>" +
         "<p><strong>你今天就去找：</strong>" + pick + "</p>" +
         "<p><strong>搜尋地區：</strong>" + city + "</p>" +
+        "<hr>" +
+        "<p><strong>AI建議：</strong></p>" +
+        "<ol>" +
+        "<li>優先選擇 Google Maps 評分 4.5 顆星以上店家</li>" +
+        "<li>優先選擇距離目前位置最近的前三家店</li>" +
+        "<li>優先選擇近期有 Instagram 打卡照片的店家</li>" +
+        "</ol>" +
         "<a href='" + googleMapsUrl + "' target='_blank'>📍 用 Google Maps 找附近地點</a>" +
         "<a href='" + instagramUrl + "' target='_blank'>📸 用 Instagram 看打卡照片</a>" +
         "<p class='note'>適合選擇困難、不想再滑手機找店的人使用。</p>";
